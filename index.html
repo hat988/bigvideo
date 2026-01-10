@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Size Increaser Tool - Increase Video Size Artificially</title>
+    <meta name="description" content="Free online tool to artificially increase video file size without affecting quality. Increase video size for testing or other purposes.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .hidden-el { display: none !important; }
+        
+        /* Mobile Menu Transition */
+        #mobile-menu { transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out; max-height: 0; opacity: 0; overflow: hidden; }
+        #mobile-menu.open { max-height: 300px; opacity: 1; }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800 flex flex-col">
+
+    <!-- Navigation Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-3">
+                    <!-- 40x40 Placeholder Logo -->
+                    <div class="w-[40px] h-[40px] bg-gray-300 rounded flex items-center justify-center text-xs text-gray-500 font-mono">
+                        LOGO
+                    </div>
+                    <span class="font-bold text-xl tracking-tight text-gray-900">BigVideo</span>
+                </div>
+
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">Home</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">About Us</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600 font-medium transition-colors">DMCA</a>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-500 hover:text-gray-700 focus:outline-none p-2">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="md:hidden bg-white border-t border-gray-100">
+            <div class="px-4 pt-2 pb-4 space-y-1 shadow-lg">
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">Home</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">About Us</a>
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50">DMCA</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            
+            <!-- LEFT COLUMN (70%) - Tool & Content -->
+            <main class="w-full lg:w-[70%] space-y-8">
+                
+                <!-- Tool Section -->
+                <section class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 md:p-8 text-center border-b border-gray-100">
+                        <h1 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">Video Size Increaser</h1>
+                        <p class="text-gray-600">Increase your video file size instantly from MB to GB.</p>
+                    </div>
+
+                    <div class="p-6 md:p-8">
+                        <!-- File Upload Area -->
+                        <div id="drop-zone" 
+                             class="relative border-2 border-dashed border-gray-300 bg-gray-50 rounded-xl p-10 transition-all duration-300 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-100 hover:border-blue-400 group">
+                            
+                            <input id="file-input" type="file" accept="video/*" class="hidden">
+                            
+                            <!-- Default State -->
+                            <div id="upload-prompt" class="flex flex-col items-center">
+                                <div class="w-16 h-16 bg-white rounded-full shadow-sm flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="upload-cloud" class="w-8 h-8 text-blue-500"></i>
+                                </div>
+                                <p class="text-lg text-gray-700 font-medium mb-1">Click to upload or drag video here</p>
+                                <p class="text-sm text-gray-500">Supports MP4, AVI, MKV, MOV (Max 1GB output recommended)</p>
+                            </div>
+
+                            <!-- File Selected State -->
+                            <div id="file-info" class="hidden-el flex flex-col items-center animate-fade-in w-full">
+                                <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                                    <i data-lucide="file-video" class="w-8 h-8 text-blue-600"></i>
+                                </div>
+                                <h3 id="file-name" class="text-xl font-bold text-gray-800 mb-1 break-all px-4">filename.mp4</h3>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-200 text-gray-700">
+                                    <span id="file-original-size">Original Size: 0 MB</span>
+                                </span>
+                                <button id="remove-btn" class="mt-4 text-sm text-red-500 hover:text-red-700 font-medium hover:underline flex items-center gap-1">
+                                    <i data-lucide="x" class="w-4 h-4"></i> Remove File
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Controls Section -->
+                        <div id="controls-section" class="hidden-el mt-8 bg-gray-50 rounded-xl p-6 border border-gray-200 animate-fade-in">
+                            <div class="mb-6">
+                                <div class="flex justify-between items-end mb-4">
+                                    <label class="text-sm font-bold text-gray-700 flex items-center gap-2 uppercase tracking-wide">
+                                        <i data-lucide="maximize-2" class="w-4 h-4 text-blue-500"></i> Target Size
+                                    </label>
+                                    <span id="target-size-display" class="text-3xl font-black text-blue-600">100 MB</span>
+                                </div>
+                                
+                                <input id="size-slider" type="range" min="1" max="2000" step="1" value="100" 
+                                       class="w-full h-3 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-blue-600 hover:accent-blue-500 transition-all">
+                                
+                                <div class="flex justify-between text-xs font-medium text-gray-500 mt-2">
+                                    <span id="min-size-label">Original</span>
+                                    <span>Max Safe (2GB)</span>
+                                </div>
+                            </div>
+
+                            <!-- Error Message -->
+                            <div id="error-msg" class="hidden-el mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg flex items-start gap-3 text-red-700 text-sm">
+                                <i data-lucide="alert-circle" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
+                                <span id="error-text">Error message here</span>
+                            </div>
+
+                            <!-- Process Button -->
+                            <button id="process-btn" class="w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-xl bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white transform hover:-translate-y-0.5">
+                                <i data-lucide="zap" class="w-5 h-5 fill-current"></i> Increase Video Size Now
+                            </button>
+                        </div>
+
+                        <!-- Download Section -->
+                        <div id="download-section" class="hidden-el mt-8 bg-green-50 rounded-xl p-8 border border-green-200 text-center animate-fade-in">
+                            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                                <i data-lucide="check-circle" class="w-10 h-10 text-green-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-2">Success! File Ready.</h3>
+                            <p class="text-gray-600 mb-8">
+                                Your video has been increased to <strong id="final-size-display" class="text-gray-900">100 MB</strong>.
+                            </p>
+                            
+                            <a id="download-link" href="#" download="" class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-10 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-green-200">
+                                <i data-lucide="download" class="w-5 h-5"></i> Download File
+                            </a>
+
+                            <button id="restart-btn" class="block mx-auto mt-6 text-gray-500 hover:text-blue-600 font-medium text-sm transition-colors">
+                                Process Another Video
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- SEO Content / Tutorial Section -->
+                <article class="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 prose prose-lg max-w-none text-gray-700">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">How to Artificially Increase Video File Size</h2>
+                    
+                    <p>
+                        In the digital age, we usually strive to compress files to save space. However, there are unique scenarios where you might need to do the exact opposite: take a small video file and make it appear significantly larger, effectively "increasing" its file size without altering the visual content. Whether you are testing storage systems, checking upload limits on a server, or performing a harmless prank, our <strong>Video Size Increaser Tool</strong> is the perfect solution.
+                    </p>
+
+                    <h3 class="text-xl font-bold text-gray-900 mt-6 mb-3">What is Video Size Increasing?</h3>
+                    <p>
+                        Video size increasing is the process of adding "dummy data" to a video file. This tool appends empty bytes (zeros) to the end of your original file. Since video players (like VLC, Windows Media Player, or QuickTime) typically read the file header and index located at the start of the file, they simply ignore the extra data at the end. The result? A video that plays perfectly fine but reports a massive file size in your operating system.
+                    </p>
+
+                    <h3 class="text-xl font-bold text-gray-900 mt-6 mb-3">Step-by-Step Guide to Using the Tool</h3>
+                    <ol class="list-decimal pl-5 space-y-2">
+                        <li><strong>Upload Your Video:</strong> Drag and drop any video file (MP4, AVI, MKV, etc.) into the upload box above. We recommend starting with a small file for faster processing.</li>
+                        <li><strong>Select Target Size:</strong> Use the intuitive slider to choose your desired output size. You can increase a 5MB video to 100MB, 500MB, or even 1GB.</li>
+                        <li><strong>Process:</strong> Click the "Increase Video Size Now" button. Our advanced browser-based engine calculates the necessary padding.</li>
+                        <li><strong>Download:</strong> Once complete, download your new file. It will look identical to the original but will occupy the exact amount of space you specified.</li>
+                    </ol>
+
+                    <h3 class="text-xl font-bold text-gray-900 mt-6 mb-3">Important Considerations</h3>
+                    <ul class="list-disc pl-5 space-y-2">
+                        <li><strong>No Quality Improvement:</strong> It is crucial to understand that increasing the file size <em>does not</em> improve the video resolution or quality. A 360p video will remain 360p, even if it is increased to 1GB.</li>
+                        <li><strong>Compatibility:</strong> While most desktop players handle increased files well, some strict uploading platforms (like YouTube or social media) might re-process the video and strip away the empty data, returning it to its original size.</li>
+                        <li><strong>Browser Limits:</strong> Since this tool runs entirely in your browser to ensure privacy, we cap the increase at 2GB to prevent your browser tab from crashing due to memory limits.</li>
+                    </ul>
+                </article>
+
+            </main>
+
+            <!-- RIGHT COLUMN (30%) - Sidebar -->
+            <aside class="w-full lg:w-[30%] space-y-6">
+                
+                <!-- Tools Navigation Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-24">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i data-lucide="grid" class="w-5 h-5 text-blue-600"></i>
+                        Other Size Tools
+                    </h3>
+                    <div class="space-y-3">
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-blue-200 transition-all group">
+                            <div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                                <i data-lucide="image" class="w-5 h-5 text-gray-600 group-hover:text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 text-sm">Image Size Increaser</h4>
+                                <p class="text-xs text-gray-500">JPG, PNG, WebP</p>
+                            </div>
+                        </a>
+
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-blue-200 transition-all group">
+                            <div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center group-hover:bg-red-500 transition-colors">
+                                <i data-lucide="file-text" class="w-5 h-5 text-gray-600 group-hover:text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 text-sm">PDF Size Increaser</h4>
+                                <p class="text-xs text-gray-500">Increase PDF size</p>
+                            </div>
+                        </a>
+
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-blue-200 transition-all group">
+                            <div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center group-hover:bg-blue-700 transition-colors">
+                                <i data-lucide="file-type" class="w-5 h-5 text-gray-600 group-hover:text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 text-sm">Docx Size Increaser</h4>
+                                <p class="text-xs text-gray-500">For Word Documents</p>
+                            </div>
+                        </a>
+
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-blue-200 transition-all group">
+                            <div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center group-hover:bg-green-600 transition-colors">
+                                <i data-lucide="sheet" class="w-5 h-5 text-gray-600 group-hover:text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 text-sm">Excel Size Increaser</h4>
+                                <p class="text-xs text-gray-500">XLS, XLSX, CSV</p>
+                            </div>
+                        </a>
+
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-blue-200 transition-all group">
+                            <div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center group-hover:bg-yellow-500 transition-colors">
+                                <i data-lucide="archive" class="w-5 h-5 text-gray-600 group-hover:text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 text-sm">Zip Size Increaser</h4>
+                                <p class="text-xs text-gray-500">ZIP, RAR, 7z</p>
+                            </div>
+                        </a>
+
+                        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-gray-50 hover:bg-blue-50 border border-gray-100 hover:border-blue-200 transition-all group">
+                            <div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center group-hover:bg-purple-500 transition-colors">
+                                <i data-lucide="music" class="w-5 h-5 text-gray-600 group-hover:text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 text-sm">Audio Size Increaser</h4>
+                                <p class="text-xs text-gray-500">MP3, WAV, OGG</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-12 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <span class="font-bold text-xl text-gray-900">BigVideo</span>
+                    <p class="text-sm text-gray-500 mt-1">© 2024 BigVideo. All rights reserved.</p>
+                </div>
+                <div class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-gray-500 justify-center md:justify-end">
+                    <a href="#" class="hover:text-blue-600 transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Terms</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Contact</a>
+                    <a href="#" class="hover:text-blue-600 transition-colors">Disclaimer</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // --- State Management ---
+        let selectedFile = null;
+        let targetSizeMB = 100;
+        const MAX_SAFE_SIZE_MB = 2000;
+        const CHUNK_SIZE = 1024 * 1024; // 1MB
+
+        // --- DOM Elements ---
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const uploadPrompt = document.getElementById('upload-prompt');
+        const fileInfo = document.getElementById('file-info');
+        const fileNameEl = document.getElementById('file-name');
+        const fileOriginalSizeEl = document.getElementById('file-original-size');
+        const removeBtn = document.getElementById('remove-btn');
+        const controlsSection = document.getElementById('controls-section');
+        const sizeSlider = document.getElementById('size-slider');
+        const targetSizeDisplay = document.getElementById('target-size-display');
+        const minSizeLabel = document.getElementById('min-size-label');
+        const processBtn = document.getElementById('process-btn');
+        const errorMsg = document.getElementById('error-msg');
+        const errorText = document.getElementById('error-text');
+        const downloadSection = document.getElementById('download-section');
+        const downloadLink = document.getElementById('download-link');
+        const finalSizeDisplay = document.getElementById('final-size-display');
+        const restartBtn = document.getElementById('restart-btn');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Event Listeners ---
+        
+        // Mobile Menu Toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // Drag & Drop
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-blue-400', 'bg-blue-50');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-blue-400', 'bg-blue-50');
+            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) handleFile(e.target.files[0]);
+        });
+
+        removeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            resetState();
+        });
+
+        restartBtn.addEventListener('click', resetState);
+
+        sizeSlider.addEventListener('input', (e) => {
+            targetSizeMB = parseInt(e.target.value);
+            targetSizeDisplay.textContent = `${targetSizeMB} MB`;
+            validateSize();
+        });
+
+        processBtn.addEventListener('click', startProcessing);
+
+        // --- Functions ---
+
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        function handleFile(file) {
+            if (!file.type.startsWith('video/')) {
+                showError('Please upload a valid video file.');
+                return;
+            }
+
+            selectedFile = file;
+            
+            // UI Updates
+            uploadPrompt.classList.add('hidden-el');
+            fileInfo.classList.remove('hidden-el');
+            controlsSection.classList.remove('hidden-el');
+            downloadSection.classList.add('hidden-el');
+            errorMsg.classList.add('hidden-el');
+
+            fileNameEl.textContent = file.name;
+            fileOriginalSizeEl.textContent = `Original Size: ${formatBytes(file.size)}`;
+
+            // Calculate min size
+            const currentSizeMB = Math.ceil(file.size / (1024 * 1024));
+            const startSize = currentSizeMB + 50; // Default +50MB
+            
+            sizeSlider.min = currentSizeMB + 1;
+            sizeSlider.value = startSize;
+            targetSizeMB = startSize;
+            targetSizeDisplay.textContent = `${startSize} MB`;
+            minSizeLabel.textContent = `Original (${formatBytes(file.size)})`;
+
+            validateSize();
+        }
+
+        function resetState() {
+            selectedFile = null;
+            fileInput.value = '';
+            
+            uploadPrompt.classList.remove('hidden-el');
+            fileInfo.classList.add('hidden-el');
+            controlsSection.classList.add('hidden-el');
+            downloadSection.classList.add('hidden-el');
+            errorMsg.classList.add('hidden-el');
+            
+            // Cleanup previous blob URL to free memory
+            if (downloadLink.href) URL.revokeObjectURL(downloadLink.href);
+        }
+
+        function showError(msg) {
+            errorText.textContent = msg;
+            errorMsg.classList.remove('hidden-el');
+        }
+
+        function validateSize() {
+            if (!selectedFile) return;
+            const targetBytes = targetSizeMB * 1024 * 1024;
+            if (targetBytes <= selectedFile.size) {
+                showError('Target size must be larger than original file.');
+                processBtn.disabled = true;
+                processBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                errorMsg.classList.add('hidden-el');
+                processBtn.disabled = false;
+                processBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        async function startProcessing() {
+            if (!selectedFile) return;
+
+            // UI Loading State
+            processBtn.disabled = true;
+            const originalBtnContent = processBtn.innerHTML;
+            processBtn.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Processing...
+            `;
+
+            try {
+                // Give UI time to update
+                await new Promise(resolve => setTimeout(resolve, 50));
+
+                const targetSizeBytes = targetSizeMB * 1024 * 1024;
+                const paddingNeeded = targetSizeBytes - selectedFile.size;
+                const blobs = [selectedFile];
+
+                // Reusable chunk of zeros
+                const zeroChunk = new Uint8Array(CHUNK_SIZE);
+                const fullChunks = Math.floor(paddingNeeded / CHUNK_SIZE);
+                const remainder = paddingNeeded % CHUNK_SIZE;
+
+                // Add chunks
+                for (let i = 0; i < fullChunks; i++) {
+                    blobs.push(zeroChunk);
+                    // Update UI periodically to prevent freezing
+                    if (i % 50 === 0) {
+                        const progress = Math.round((i / fullChunks) * 100);
+                        processBtn.innerHTML = `
+                            <svg class="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Processing ${progress}%
+                        `;
+                        await new Promise(resolve => setTimeout(resolve, 0));
+                    }
+                }
+
+                // Add remainder
+                if (remainder > 0) {
+                    blobs.push(new Uint8Array(remainder));
+                }
+
+                // Create final file
+                const finalBlob = new Blob(blobs, { type: selectedFile.type });
+                const url = URL.createObjectURL(finalBlob);
+
+                // Setup Download
+                downloadLink.href = url;
+                downloadLink.download = `inflated_${selectedFile.name}`;
+                finalSizeDisplay.textContent = `${targetSizeMB} MB`;
+
+                // Switch Views
+                controlsSection.classList.add('hidden-el');
+                downloadSection.classList.remove('hidden-el');
+
+            } catch (err) {
+                console.error(err);
+                showError('Memory Error: The browser could not handle a file of this size.');
+            } finally {
+                // Reset Button
+                processBtn.disabled = false;
+                processBtn.innerHTML = originalBtnContent;
+            }
+        }
+    </script>
+</body>
+</html>
